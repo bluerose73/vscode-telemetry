@@ -1,7 +1,7 @@
 import { EventData, Exporter, ExporterArgs } from "./types";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { posix } from "path";
+import * as path from "path";
 
 function consoleExporter(data: EventData) {
   console.log(data);
@@ -12,9 +12,9 @@ async function fileExporter(data: EventData, args: ExporterArgs | undefined) {
     const writeData = Buffer.from(writeStr, "utf8");
 
     const folderUri = vscode.workspace.workspaceFolders[0].uri;
-    const fileUri = posix.join(folderUri.path, args.path);
+    const fileUri = path.join(folderUri.fsPath, args.path);
 
-    if (fileUri.toString() !== vscode.Uri.parse(data.documentUri).path) {
+    if (fileUri !== vscode.Uri.parse(data.documentUri).fsPath) {
       try {
         fs.appendFileSync(fileUri, writeData);
         return {
